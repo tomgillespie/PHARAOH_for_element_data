@@ -50,13 +50,13 @@ workflow PHARAOH{
         # default is minimap2
 
         String PharaohAligner="minimap2"
-        String PharaohKmerSize=19
-        String PharaohHiFiPreset="map-hifi"
+        String PharaohKmerSize=21
+        String PharaohHiFiPreset="sr"
         String pafAligner="minimap2"
 
         String minWindowSizeBp=20000
         String extendBp=50000
-        String hifiAlignmentOptions="--cs --eqx -Y -L"
+        String hifiAlignmentOptions="--cs --eqx"
     }
 
     ## Align Hap2 to Hap1 assembly
@@ -122,8 +122,8 @@ workflow PHARAOH{
     call correct_bam_t.correctBam as correctBamMaxDivergenceHap1 {
         input:
             Bam=alignAllToHap1Scattered.bamFile,
-            options="--maxDiv 0.02",
-            suffix="maxDiv.02",
+            options="--maxDiv 0.04",
+            suffix="maxDiv.04",
             dockerImage="mobinasri/secphase:dev-v0.2.0-hom"
 
     }
@@ -131,8 +131,8 @@ workflow PHARAOH{
     call correct_bam_t.correctBam as correctBamMaxDivergenceHap2 {
         input:
             Bam=alignAllToHap2Scattered.bamFile,
-            options="--maxDiv 0.02",
-            suffix="maxDiv.02",
+            options="--maxDiv 0.04",
+            suffix="maxDiv.04",
             dockerImage="mobinasri/secphase:dev-v0.2.0-hom"
 
     }
@@ -145,7 +145,7 @@ workflow PHARAOH{
             assembly=Hap1Fasta,
             assemblyIndex=Hap1FastaIndex,
             sample=sampleName,
-            modelType = "PACBIO"
+            modelType = "WGS"
     }
     call deepvariant_t.DeepVariant as DeepVariantHap2{
         input:
@@ -154,7 +154,7 @@ workflow PHARAOH{
             assembly=Hap2Fasta,
             assemblyIndex=Hap2FastaIndex,
             sample=sampleName,
-            modelType = "PACBIO"
+            modelType = "WGS"
     }
 
     ## filter variants by GQ
